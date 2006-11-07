@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Model the life-cycle of an application as a series of four modes.
 
 It is often valuable to maintain a distinction between various phases of an
