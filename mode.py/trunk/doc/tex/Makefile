@@ -11,7 +11,7 @@ MKHOWTO    = $(PYTHON_SRC)/Doc/tools/mkhowto \
 				--logging \
 				--up-link "http://www.zetadev.com/software/mode.py/" \
 				--up-title "mode.py homepage" \
-				--address "<a href=\"http://www.zetadev.com/software/mode.py/\">mode.py is Zeta software</a>. It is copyright &copy; 2006 by Chad Whitacre, and is offered free of charge, warranty, and restrictions." \
+				--address "<a href=\"http://www.zetadev.com/software/mode.py/\">mode.py is Zeta software</a>. It is copyright &copy; 2006 by Chad Whitacre, and is offered under the new BSD license." \
 #				--style style.css
 
 
@@ -25,8 +25,10 @@ html: clean
 
 pdf:
 	$(PYTHON_SRC)/Doc/tools/mkhowto --pdf mode.tex
-	mv mode.py.pdf ../mode.py-$(VERSION).pdf
+	mv mode.pdf ../mode.py-$(VERSION).pdf
 
 clean:
 	rm -rf *~ *.aux *.idx *.ilg *.ind *.log *.toc *.bkm *.syn \
 		   *.pla *.eps *.pdf *.ps *.lof *.l2h *.tex2 *.dvi html ../*.pdf
+
+all: html pdf clean

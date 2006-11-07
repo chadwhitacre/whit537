@@ -1,0 +1,33 @@
+Steps to do a release (automate eventually):
+
+Tag
+===
+
+- tag in svn
+- switch to tag
+- update version number:
+    setup.py
+    src/mode.py
+    doc/tex/Makefile
+    doc/tex/mode.tex
+- update date in doc/tex/mode.tex
+- checkin tag
+
+
+Distribute
+==========
+
+- export tag to www.zetadev.com/software/mode.py/<version>
+- generate docs
+    cd docs/tex && make all
+- build packages into dist/
+    make pkg
+
+
+Announce
+========
+
+- update http://zetadev.com/software/mode.py/
+- announce on ...
+    nntp://comp.lang.python.announce
+    http://tech.whit537.org/
