@@ -3,7 +3,7 @@
 
 It is often valuable to maintain a distinction between various phases of an
 application's lifecycle. This module calls these phases "modes," and identifies
-four of them:
+four of them, given here in conceptual life-cycle order:
 
     debugging       The application is being actively debugged; exceptions
                       may trigger an interactive debugger.
@@ -38,43 +38,30 @@ Functions
 
 Members
 
-    This module defines a number of boolean attributes reflecting the current
-    mode setting, including abbreviations, combinations, and uppercase versions
-    of each.
+    The module defines a number of boolean attributes reflecting the current
+    mode setting, including abbreviations and combinations. Uppercase versions
+    of each of the following are also defined (e.g., DEBUGGING).
 
         Name                        True if PYTHONMODE is set to ...
         -----------------------------------------------------------------------
         debugging                   debugging
-        DEBUGGING                   debugging
         deb                         debugging
-        DEB                         debugging
 
         development                 development
-        DEVELOPMENT                 development
         dev                         development
-        DEV                         development
 
         staging                     staging
-        STAGING                     staging
         st                          staging
-        ST                          staging
 
         production                  production
-        PRODUCTION                  production
         prod                        production
-        PROD                        production
 
         debugging_or_development    debugging or development
-        DEBUGGING_OR_DEVELOPMENT    debugging or development
         debdev                      debugging or development
-        DEBDEV                      debugging or development
         devdeb                      debugging or development
-        DEVDEB                      debugging or development
 
         staging_or_production       staging or production
-        STAGING_OR_PRODUCTION       staging or production
         stprod                      staging or production
-        STPROD                      staging or production
 
 
 Example usage:
