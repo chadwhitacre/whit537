@@ -14,23 +14,23 @@ clean:
 
 dist: clean
 	mkdir dist
-	mkdir dist/mode.py-${version}
+	mkdir dist/daemon.py-${version}
 	cp -r README \
 	      src \
 	      setup.py \
-	      dist/mode.py-${version}
+	      dist/daemon.py-${version}
 
 	make -C doc/tex all clean
-	mkdir dist/mode.py-${version}/doc
+	mkdir dist/daemon.py-${version}/doc
 	cp -r doc/html \
-	      doc/mode.py-${version}.pdf \
+	      doc/daemon.py-${version}.pdf \
 	      doc/HISTORY \
-	      dist/mode.py-${version}/doc
+	      dist/daemon.py-${version}/doc
 
-	tar --directory dist -zcf dist/mode.py-${version}.tgz mode.py-${version}
-	tar --directory dist -jcf dist/mode.py-${version}.tbz mode.py-${version}
+	tar --directory dist -zcf dist/daemon.py-${version}.tgz daemon.py-${version}
+	tar --directory dist -jcf dist/daemon.py-${version}.tbz daemon.py-${version}
 
 # ZIP archive gets different line endings
-	svneol clean -w dist/mode.py-${version}
-	cd dist && zip -9rq mode.py-${version}.zip mode.py-${version}
-#	rm -rf dist/mode.py-${version}
+	svneol clean -w dist/daemon.py-${version}
+	cd dist && zip -9rq daemon.py-${version}.zip daemon.py-${version}
+#	rm -rf dist/daemon.py-${version}
