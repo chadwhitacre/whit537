@@ -10,7 +10,7 @@ clean:
 
 # Target for building a distribution
 # ==================================
-# note the dependency on svneol: https://www.zetadev.com/svn/public/svneol/
+# note the dependency on svneol: http://www.zetadev.com/svn/public/svneol/
 
 dist: clean
 	mkdir dist
@@ -30,7 +30,7 @@ dist: clean
 	tar --directory dist -zcf dist/mode.py-${version}.tgz mode.py-${version}
 	tar --directory dist -jcf dist/mode.py-${version}.tbz mode.py-${version}
 
-# ZIP archive gets different line endings and script name
+# ZIP archive gets different line endings
 	svneol clean -w dist/mode.py-${version}
 	cd dist && zip -9rq mode.py-${version}.zip mode.py-${version}
 #	rm -rf dist/mode.py-${version}
