@@ -3,6 +3,9 @@
 We could automate the version sweep with a ~~VERSION~~ token and find|sed, but
 we'd have to watch underlines in HISTORY (would work for 1.0a1 -> 9.9a9).
 
+While releasing, track updates to this doc in a tmp file, and then change the
+doc on trunk/ again after the release is done.
+
 """
 
 # Tag
