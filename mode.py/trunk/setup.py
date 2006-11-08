@@ -2,7 +2,7 @@ from distutils.core import setup
 
 
 classifiers = [
-    'Development Status :: 4 - Beta'
+    'Development Status :: 3 - Alpha'
   , 'Intended Audience :: Developers'
   , 'License :: OSI Approved :: BSD License'
   , 'Natural Language :: English'
