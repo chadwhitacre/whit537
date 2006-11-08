@@ -6,6 +6,7 @@ Tag
 - tag in svn
 - switch to tag
 - update version number:
+    Makefile
     setup.py
     src/mode.py
     doc/tex/Makefile
@@ -21,7 +22,7 @@ Distribute
 - generate docs
     cd docs/tex && make all
 - build packages into dist/
-    make pkg
+    make dist
 
 
 Announce

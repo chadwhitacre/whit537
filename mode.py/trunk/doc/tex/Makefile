@@ -21,6 +21,11 @@ html: clean
 	$(MKHOWTO) mode.tex
 	cp -r ../icons ./html/
 	rm -rf ./html/icons/.svn
+	rm -rf ./html/*.how \
+	       ./html/*.pl \
+	       ./html/*.dat \
+	       ./html/WARNINGS \
+	       ./html/image.png
 	rm -rf ../html && mv ./html ../
 
 pdf:
