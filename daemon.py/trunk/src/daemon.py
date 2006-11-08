@@ -1,24 +1,13 @@
 """Disk And Execution MONitor (daemon) support.
 
-Lightly adapted from Chad J. Schroeder's recipe:
+Daemonization is fundamental to computing, and proper techniques have by now
+been well-established. Chad J. Schroeder provides a solid Python implementation
+in his ASPN Python Cookbook recipe:
 
     http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/278731
 
-The original is (c) 2005 by Chad J. Schroeder, and is used here under "the
-Python license," per ASPN's notice:
-
-    Except where otherwise noted, recipes in the Python Cookbook are published
-    under the Python license <http://www.python.org/license>.
-
-
-Configurable daemon behaviors:
-
-    1.) The current working directory set to the "/" directory.
-    2.) The current file creation mode mask set to 0.
-    3.) Close all open files (1024).
-    4.) Redirect standard I/O streams to "/dev/null".
-
-A failed call to fork() now raises an exception.
+The present module is very lightly adapted from that original. The value added
+is in API smoothing, documentation, and integration with PyPI and easy_install.
 
 References:
     1) Advanced Programming in the Unix Environment: W. Richard Stevens
@@ -26,6 +15,10 @@ References:
          http://www.erlenstar.demon.co.uk/unix/faq_toc.html
 
 """
+
+__author__ = "Chad J. Schroeder"
+__copyright__ = "Copyright (C) 2005 Chad J. Schroeder"
+__credits__ = "Chad Whitacre <chad@zetaweb.com>"
 
 __version__ = "0.3"
 
@@ -35,25 +28,25 @@ import resource
 import sys
 
 
-# Default daemon parameters.
-# File mode creation mask of the daemon.
-UMASK = 0
-
-# Default working directory for the daemon.
-WORKDIR = "/"
-
-# Default maximum for the number of available file descriptors.
-MAXFD = 1024
-
 # The standard I/O file descriptors are redirected to /dev/null by default.
 if (hasattr(os, "devnull")):
-    REDIRECT_TO = os.devnull
+    DEVNULL = os.devnull
 else:
-    REDIRECT_TO = "/dev/null"
+    DEVNULL = "/dev/null"
 
-def createDaemon():
-    """Detach a process from the controlling terminal and run it in the
-    background as a daemon.
+
+def become(umask=0, workdir='/', maxfd=1024, redirect_to=DEVNULL):
+    """Daemonize the current process.
+
+    When called, the current process will detach from any controlling terminal,
+    and will run in the background as a daemon. The following options are
+    available:
+
+      umask         file mode creation mask of the daemon [0]
+      workdir       working directory for the daemon [/]
+      maxfd         default maximum number of available file descriptors [1024]
+      redirect_to   new endpoint for the standard file descriptors [/dev/null]
+
     """
 
     try:
@@ -66,7 +59,7 @@ def createDaemon():
     except OSError, e:
         raise Exception, "%s [%d]" % (e.strerror, e.errno)
 
-    if (pid == 0):	# The first child.
+    if (pid == 0):    # The first child.
         # To become the session leader of this new session and the process group
         # leader of the new process group, we call os.setsid().  The process is
         # also guaranteed not to have a controlling terminal.
@@ -110,21 +103,21 @@ def createDaemon():
             # based systems).  This second fork guarantees that the child is no
             # longer a session leader, preventing the daemon from ever acquiring
             # a controlling terminal.
-            pid = os.fork()	# Fork a second child.
+            pid = os.fork()    # Fork a second child.
         except OSError, e:
             raise Exception, "%s [%d]" % (e.strerror, e.errno)
 
-        if (pid == 0):	# The second child.
+        if (pid == 0):    # The second child.
             # Since the current working directory may be a mounted filesystem, we
             # avoid the issue of not being able to unmount the filesystem at
             # shutdown time by changing it to the root directory.
-            os.chdir(WORKDIR)
+            os.chdir(workdir)
             # We probably don't want the file mode creation mask inherited from
             # the parent, so we give the child complete control over permissions.
-            os.umask(UMASK)
+            os.umask(umask)
         else:
             # exit() or _exit()?  See below.
-            os._exit(0)	# Exit parent (the first child) of the second child.
+            os._exit(0)    # Exit parent (the first child) of the second child.
     else:
         # exit() or _exit()?
         # _exit is like exit(), but it doesn't call any functions registered
@@ -133,7 +126,7 @@ def createDaemon():
         # streams to be flushed twice and any temporary files may be unexpectedly
         # removed.  It's therefore recommended that child branches of a fork()
         # and the parent branch(es) of a daemon use _exit().
-        os._exit(0)	# Exit parent of the first child.
+        os._exit(0)    # Exit parent of the first child.
 
     # Close all open file descriptors.  This prevents the child from keeping
     # open any file descriptors inherited from the parent.  There is a variety
@@ -160,17 +153,16 @@ def createDaemon():
     # Use the getrlimit method to retrieve the maximum file descriptor number
     # that can be opened by this process.  If there is not limit on the
     # resource, use the default value.
-    #
-    import resource		# Resource usage information.
-    maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
-    if (maxfd == resource.RLIM_INFINITY):
-        maxfd = MAXFD
+
+    nofile = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
+    if (nofile == resource.RLIM_INFINITY):
+        nofile = maxfd
 
     # Iterate through and close all file descriptors.
-    for fd in range(0, maxfd):
+    for fd in range(0, nofile):
         try:
             os.close(fd)
-        except OSError:	# ERROR, fd wasn't open to begin with (ignored)
+        except OSError:    # ERROR, fd wasn't open to begin with (ignored)
             pass
 
     # Redirect the standard I/O file descriptors to the specified file.  Since
@@ -180,27 +172,26 @@ def createDaemon():
 
     # This call to open is guaranteed to return the lowest file descriptor,
     # which will be 0 (stdin), since it was closed above.
-    os.open(REDIRECT_TO, os.O_RDWR)	# standard input (0)
+    os.open(redirect_to, os.O_RDWR)    # standard input (0)
 
     # Duplicate standard input to standard output and standard error.
-    os.dup2(0, 1)			# standard output (1)
-    os.dup2(0, 2)			# standard error (2)
+    os.dup2(0, 1)            # standard output (1)
+    os.dup2(0, 2)            # standard error (2)
 
     return(0)
 
 
 if __name__ == "__main__":
     """Test/demonstrate the module.
+
+    The following will create a new file in the current directory, containing a
+    number of daemon-related process parameters. In particular, notice the
+    relationship between the daemon's process ID, process group ID, and its
+    parent's process ID.
+
     """
 
-    retCode = createDaemon()
-
-    # The code, as is, will create a new file in the root directory, when
-    # executed with superuser privileges.  The file will contain the following
-    # daemon related process parameters: return code, process ID, parent
-    # process group ID, session ID, user ID, effective user ID, real group ID,
-    # and the effective group ID.  Notice the relationship between the daemon's
-    # process ID, process group ID, and its parent's process ID.
+    retCode = become(workdir='.')
 
     procParams = """
     return code = %s
@@ -215,6 +206,18 @@ if __name__ == "__main__":
     """ % (retCode, os.getpid(), os.getppid(), os.getpgrp(), os.getsid(0),
     os.getuid(), os.geteuid(), os.getgid(), os.getegid())
 
-    open("createDaemon.log", "w").write(procParams + "\n")
+    open("daemon.log", "w").write(procParams + "\n")
 
     sys.exit(retCode)
+
+
+"""
+The original module is (c) 2005 by Chad J. Schroeder, and is used here under
+"the Python license," per ASPN's notice:
+
+    Except where otherwise noted, recipes in the Python Cookbook are published
+    under the Python license <http://www.python.org/license>.
+
+My changes are (c) 2006 Chad Whitacre <chad@zetaweb.com>, and are offered under
+the same license.
+"""
