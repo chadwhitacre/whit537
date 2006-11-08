@@ -1,0 +1,62 @@
+"""Steps to do a release (automate eventually).
+
+We could automate the version sweep with a ~~VERSION~~ token and find|sed, but
+we'd have to watch underlines in HISTORY (would work for 1.0a1 -> 9.9a9).
+
+While releasing, track updates to this doc in a tmp file, and then change the
+doc on trunk/ again after the release is done.
+
+"""
+
+# Tag
+# ===
+
+- update doc/HISTORY on trunk/
+- tag in svn
+- switch to tag
+- update version number:
+    Makefile
+    setup.py
+    src/mode.py
+    doc/tex/Makefile
+    doc/tex/mode.tex
+- update date in doc/tex/mode.tex
+- checkin tag
+
+
+# Distribute
+# ==========
+# This happens on erilich. We can't make it in place because latex2html barfs on
+# dots in the path. So we make it in ~ and then move it into place.
+
+$ svn export $TAG ~/mode_py
+$ cd $VERSION && make dist
+$ mv ~/mode_py /usr/local/www/www.zetadev.com/software/mode.py/$VERSION
+
+
+# Smoke It
+# ========
+
+run through install on a clean box
+    download archive
+    unpack
+    python setup.py install
+    python -c"import mode"
+
+
+# Announce
+# ========
+# The first announcement is to register with PyPI. Under Python 2.5 we also have
+# the option to upload to PyPI as well.
+
+$ python setup.py register
+- update http://www.zetadev.com/software/mode.py/index.html
+    bump current to old version
+    add new version
+        updated links
+        text of doc/HISTORY
+- announce on ...
+    nntp://comp.lang.python.announce
+    http://tech.whit537.org/
+
+
