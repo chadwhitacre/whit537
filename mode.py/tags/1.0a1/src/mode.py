@@ -82,7 +82,7 @@ Example usage:
 
 """
 __author__ = "Chad Whitacre <chad@zetaweb.com>"
-__version__ = "1.0"
+__version__ = "1.0a1"
 
 
 import os

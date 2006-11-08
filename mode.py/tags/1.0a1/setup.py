@@ -2,7 +2,7 @@ from distutils.core import setup
 
 
 classifiers = [
-    'Development Status :: 4 - Beta'
+    'Development Status :: 3 - Alpha'
   , 'Intended Audience :: Developers'
   , 'License :: OSI Approved :: BSD License'
   , 'Natural Language :: English'
@@ -16,7 +16,7 @@ classifiers = [
 
 
 setup( name='mode.py'
-     , version='1.0'
+     , version='1.0a1'
      , package_dir = {'':'src'}
      , py_modules=['mode']
      , description = ( 'mode.py models the life-cycle of an application as a '

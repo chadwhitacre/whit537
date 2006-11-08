@@ -1,4 +1,4 @@
-version=1.0
+version=1.0a1
 
 clean:
 # remove all of the cruft that gets auto-generated on doc/install/release
