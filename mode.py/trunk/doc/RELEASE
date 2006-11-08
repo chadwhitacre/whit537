@@ -19,10 +19,7 @@ Distribute
 ==========
 
 - export tag to www.zetadev.com/software/mode.py/<version>
-- generate docs
-    cd docs/tex && make all
-- build packages into dist/
-    make dist
+- make dist
 
 
 Announce
