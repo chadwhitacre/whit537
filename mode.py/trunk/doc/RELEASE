@@ -27,14 +27,11 @@ doc on trunk/ again after the release is done.
 # Distribute
 # ==========
 # This happens on erilich. We can't make it in place because latex2html barfs on
-# dots in the path. So we make it in ~ and then move it into place. We also
-# register with PyPI from here. Under Python 2.5 we also have the option to
-# upload to PyPI as well.
+# dots in the path. So we make it in ~ and then move it into place.
 
 $ svn export $TAG ~/mode_py
 $ cd $VERSION && make dist
 $ mv ~/mode_py /usr/local/www/www.zetadev.com/software/mode.py/$VERSION
-$ python setup.py register
 
 
 # Smoke It
@@ -49,7 +46,10 @@ run through install on a clean box
 
 # Announce
 # ========
+# The first announcement is to register with PyPI. Under Python 2.5 we also have
+# the option to upload to PyPI as well.
 
+$ python setup.py register
 - update http://www.zetadev.com/software/mode.py/index.html
     bump current to old version
     add new version
