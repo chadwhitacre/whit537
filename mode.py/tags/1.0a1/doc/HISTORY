@@ -1,10 +1,11 @@
 1.0a1 -- November 7, 2006
 =========================
 
-    This is the first public release of mode.py. mode.py started life over a
-    year ago, in version 0.6 of httpy. I'm factoring it out in preparation for a
-    new version of httpy.
+    This is the first public release of mode.py. It started life over a year
+    ago, in version 0.6 of httpy. I'm factoring it out in preparation for a new
+    version of httpy.
 
     After mode.py's API has undergone scrutiny and I'm satisfied that it is
     stable, I will release 1.0b1. When I'm satisfied that mode.py is both stable
-    and bug-free, I'll release 1.0.0.
+    and bug-free, I'll cut a 1.0 maintenance branch, and will release 1.0.0 from
+    that.
