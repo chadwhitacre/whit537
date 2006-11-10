@@ -1,24 +1,64 @@
-before doing release, test distribution
-    make install clean
-    make uninstall
-    bin/smoke-it.py
+"""Steps to do a release (automate eventually).
 
-update the following on the tag:
-    Makefile                            version
-    doc/httpy.1                         date and VERSION
-    doc/tex/Makefile                    version
-    doc/tex/httpy.tex                   version and date
-    etc/Makefile                        version
-    setup.py                            version
-    site-packages/httpy/__init__.py     __version__, tweak logging
+We could automate the version sweep with a ~~VERSION~~ token and find|sed, but
+we'd have to watch underlines in HISTORY (would work for 1.0a1 -> 9.9a9).
 
-make dist to generate docs and build archives
-    post to http://www.zetadev.com/software/httpy/
+While releasing, track updates to this doc in a tmp file, and then change the
+doc on trunk/ again after the release is done.
 
-update PyPI:
-    $ python setup.py register
+"""
 
-announce
-    Google Group
+# Tag
+# ===
+
+- update doc/HISTORY on trunk/
+- tag in svn
+- switch to tag
+- update version number:
+    Makefile
+    setup.py
+    src/httpy.py
+    doc/tex/Makefile
+    doc/tex/httpy.tex
+- update date in doc/tex/httpy.tex
+- checkin tag
+
+
+# Distribute
+# ==========
+# This happens on erilich. We can't make it in place because latex2html barfs on
+# dots in the path. So we make it in ~ and then move it into place.
+
+$ svn export $TAG ~/httpy
+$ cd $VERSION && make dist
+$ mv ~/httpy /usr/local/www/www.zetadev.com/software/httpy/$VERSION
+
+
+# Smoke It
+# ========
+
+run through install on a clean box
+    download archive
+    unpack
+    python setup.py install
+    python -c"import httpy"
+
+
+# Announce
+# ========
+# The first announcement is to register with PyPI. Under Python 2.5 we also have
+# the option to upload to PyPI.
+
+$ python setup.py register
+- update http://www.zetadev.com/software/httpy/index.html
+    bump current to old version
+    add new version
+        updated links
+        text of doc/HISTORY
+- announce on ...
+    nntp://comp.lang.python.announce
+    http://tech.whit537.org/
     Web-SIG
-    python-announce
+
+
+

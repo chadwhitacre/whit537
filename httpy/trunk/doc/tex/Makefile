@@ -1,8 +1,8 @@
-# Makefile to create documentation using the Python LaTeX system.
+# Makefile to create documentation using the Python LaTeX system. Set the
+# PYTHONSRC environment variable to the root of a Python source distribution.
 
-VERSION=0.9
-PYTHON_SRC = /home/whit537/shelf/Python-2.4.2
-MKHOWTO    = $(PYTHON_SRC)/Doc/tools/mkhowto \
+VERSION=~~VERSION~~
+MKHOWTO    = $PYTHON_SRC/Doc/tools/mkhowto \
 				--iconserver icons \
 				--split 5 \
 				--link 3 \
@@ -29,4 +29,4 @@ pdf:
 
 clean:
 	rm -rf *~ *.aux *.idx *.ilg *.ind *.log *.toc *.bkm *.syn \
-		   *.pla *.eps *.pdf *.ps *.lof *.l2h *.tex2 *.dvi html ../*.pdf
+		   *.pla *.eps *.pdf *.ps *.lof *.l2h *.tex2 *.dvi ../html ../*.pdf
