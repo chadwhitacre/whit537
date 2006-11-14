@@ -14,10 +14,11 @@ clean:
 
 version:
 # Replace ~~VERSION~~ with the version number in all files except this one and
-# hidden svn files.
+# hidden svn files and in the (binary) files in doc/icons.
 	find . -type f \
 	       \! -regex '.*/.svn.*' \
 	       \! -regex '\./Makefile' \
+	       \! -regex '\./doc/icons.*' \
 	       -exec sed -e 's/~~VERSION~~/$(VERSION)/g' -i '' {} \;
 
 dist: version clean
