@@ -1,5 +1,6 @@
-~~VERSION~~ -- November 13, 2006
-==========================
+========================================
+    ~~VERSION~~ -- November 13, 2006
+========================================
 
 This is a major release of httpy, marking a significant change in scope. Whereas
 previous versions attempted to compete with WSGI, this release aims only to
@@ -15,8 +16,9 @@ is stable, I will release 1.0b1. When it is bug-free, I will cut a 1.0
 maintenance branch, and release 1.0.0 from there.
 
 
-0.9a2 -- April 12, 2006
-=======================
+========================================
+    0.9a2 -- April 12, 2006
+========================================
 
 This is the second public release of httpy, incorporating the following
 significant API changes in addition to miscellaneous bug fixes:
@@ -45,9 +47,9 @@ change significantly, followed by one or two beta releases, a release candidate,
 and then a final release, which will be called 0.9.1.
 
 
-
-0.9.0 -- February 23, 2006
-==========================
+========================================
+    0.9.0 -- February 23, 2006
+========================================
 
 This is the first public release. Please report bugs and other feedback to the
 Google Group.
