@@ -1,4 +1,4 @@
-version=1.0
+VERSION=1.0
 
 clean:
 # remove all of the cruft that gets auto-generated on doc/install/release
@@ -13,7 +13,11 @@ clean:
 # note the dependency on svneol: http://www.zetadev.com/svn/public/svneol/
 
 version:
-    find . -type f -exec sed -E 's/~~VERSION~~//g'
+	find . -prune \
+	       -regex '^\./Makefile' \
+	       -regex '^\./doc/html/.*' \
+	       -type f \
+	       -exec sed -e 's/~~VERSION~~/$(VERSION)/g' -i '' {} \;
 
 dist: version clean
 	mkdir dist
