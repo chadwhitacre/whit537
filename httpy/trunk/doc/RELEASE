@@ -11,6 +11,7 @@ doc on trunk/ again after the release is done.
 - update doc/HISTORY on trunk/
 - tag in svn
 - switch to tag
+- update version in Makefile and do `make version`
 - update date in doc/tex/httpy.tex
 - checkin tag
 
