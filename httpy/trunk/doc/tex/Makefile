@@ -26,7 +26,7 @@ html: clean
 	rm -rf ../html && mv ./html ../
 
 pdf:
-	$(PYTHON_SRC)/Doc/tools/mkhowto --pdf httpy.tex
+	$(PYTHONSRC)/Doc/tools/mkhowto --pdf httpy.tex
 	mv httpy.pdf ../httpy-$(VERSION).pdf
 
 clean:
