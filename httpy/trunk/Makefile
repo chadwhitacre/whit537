@@ -13,31 +13,32 @@ clean:
 # note the dependency on svneol: http://www.zetadev.com/svn/public/svneol/
 
 version:
-	find . -prune \
-	       -regex '^\./Makefile' \
-	       -regex '^\./doc/html/.*' \
-	       -type f \
+# Replace ~~VERSION~~ with the version number in all files except this one and
+# hidden svn files.
+	find . -type f \
+	       \! -regex '.*/.svn.*' \
+	       \! -regex '\./Makefile' \
 	       -exec sed -e 's/~~VERSION~~/$(VERSION)/g' -i '' {} \;
 
 dist: version clean
 	mkdir dist
-	mkdir dist/httpy-${version}
+	mkdir dist/httpy-${VERSION}
 	cp -r README \
 	      src \
 	      setup.py \
-	      dist/httpy-${version}
+	      dist/httpy-${VERSION}
 
 	make -C doc/tex all clean
-	mkdir dist/httpy-${version}/doc
+	mkdir dist/httpy-${VERSION}/doc
 	cp -r doc/html \
-	      doc/httpy-${version}.pdf \
+	      doc/httpy-${VERSION}.pdf \
 	      doc/HISTORY \
-	      dist/httpy-${version}/doc
+	      dist/httpy-${VERSION}/doc
 
-	tar --directory dist -zcf dist/httpy-${version}.tgz httpy-${version}
-	tar --directory dist -jcf dist/httpy-${version}.tbz httpy-${version}
+	tar --directory dist -zcf dist/httpy-${VERSION}.tgz httpy-${VERSION}
+	tar --directory dist -jcf dist/httpy-${VERSION}.tbz httpy-${VERSION}
 
 # ZIP archive gets different line endings
-	svneol clean -w dist/httpy-${version}
-	cd dist && zip -9rq httpy-${version}.zip httpy-${version}
-#	rm -rf dist/httpy-${version}
+	svneol clean -w dist/httpy-${VERSION}
+	cd dist && zip -9rq httpy-${VERSION}.zip httpy-${VERSION}
+#	rm -rf dist/httpy-${VERSION}
