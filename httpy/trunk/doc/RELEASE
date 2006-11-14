@@ -1,8 +1,5 @@
 """Steps to do a release (automate eventually).
 
-We could automate the version sweep with a ~~VERSION~~ token and find|sed, but
-we'd have to watch underlines in HISTORY (would work for 1.0a1 -> 9.9a9).
-
 While releasing, track updates to this doc in a tmp file, and then change the
 doc on trunk/ again after the release is done.
 
@@ -14,12 +11,6 @@ doc on trunk/ again after the release is done.
 - update doc/HISTORY on trunk/
 - tag in svn
 - switch to tag
-- update version number:
-    Makefile
-    setup.py
-    src/httpy.py
-    doc/tex/Makefile
-    doc/tex/httpy.tex
 - update date in doc/tex/httpy.tex
 - checkin tag
 
@@ -59,6 +50,3 @@ $ python setup.py register
     nntp://comp.lang.python.announce
     http://tech.whit537.org/
     Web-SIG
-
-
-
