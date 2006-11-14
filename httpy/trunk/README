@@ -4,7 +4,7 @@
 
 This is httpy, a Python module that smooths out WSGI's most glaring warts. You
 will find documentation in the doc/ directory of this distribution, inline in
-the module docstring, and online at:
+the module's docstrings, and online at:
 
   http://www.zetadev.com/software/httpy/
 
@@ -40,3 +40,5 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+<http://opensource.org/licenses/bsd-license.php>

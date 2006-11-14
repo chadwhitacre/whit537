@@ -29,8 +29,8 @@
 \release{~~VERSION~~}			% release version; this is used to define the
 				% \version macro
 
-\makeindex			% tell \index to actually write the .idx file
-\makemodindex			% If this contains a lot of module sections.
+%\makeindex			% tell \index to actually write the .idx file
+%\makemodindex			% If this contains a lot of module sections.
 
 
 \begin{document}
@@ -40,99 +40,102 @@
 \begin{abstract}
 
 \noindent
-httpy is a Python module that smooths out WSGI's most glaring warts.
+\module{httpy} is a Python module that smooths out WSGI's most glaring warts.
 
 \end{abstract}
 
-\chapter{Introduction}
 
-It is often valuable to maintain a distinction between various phases of an
-application's lifecycle. This module calls these phases \dfn{modes}, and
-identifies four of them, given here in conceptual life-cycle order:
+\chapter{API Reference \label{api}}
 
-\begin{tableii}{l|l}{code}{Mode}{Description}
-\lineii{debugging}{The application is being actively debugged; exceptions may
-    trigger an interactive debugger.}
-\lineii{development}{The application is being actively developed; however,
-    exceptions should not trigger interactive debugging.}
-\lineii{staging}{The application is deployed in a mock-production
-    environment.}
-\lineii{production}{The application is in live use by its end users.}
-\end{tableii}
+The request side of WSGI---the "commons" of the \var{environ} mapping---is quite
+nice. It honors the tradition of CGI, and it's just a mapping. Simple.
+
+The response-side API is a little stiffer, because WSGI has to support edge
+cases like serving large files, complex exception handling, and HTTP/1.1
+features. This results in warts like \code{start_response}, and the requirement
+that apps return an iterable. The intention in \ulink{PEP
+333}{http://www.python.org/dev/peps/pep-0333/} is that these warts be smoothed
+over at other layers; this is such a layer.
+
+\module{httpy} provides the following classes:
+
+\begin{classdesc}{Responder}{\var{app}}
+Constructs a new \class{Responder} object. \var{app} is an extended WSGI
+application: it may alternately return a string, or return or raise a
+\class{Response} object.
+\end{classdesc}
+
+\begin{classdesc}{Response}{\optional{code} \optional{, body} \optional{,
+    headers}}
+Constructs a new \class{Response} object. If given, \var{code} must be an
+integer; the default is
+\ulink{200}{http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1}
+(see \ulink{the HTTP
+spec}{http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html} for other values
+that will be meaningful to most HTTP clients). \var{body} must be a string.
+\var{headers} may be a dictionary or a list of 2-tuples. \var{body} is second
+rather than \var{headers} because one more often wants to specify a body without
+headers than vice versa.
+\end{classdesc}
 
 
-The expectation is that various aspects of the application---logging, exception
-handling, data sourcing---will adapt to the current mode. The mode is set in the
-\envvar{PYTHONMODE} environment variable. This module provides API for
-interacting with this variable. If \envvar{PYTHONMODE} is unset, it will be set
-to \code{development} when this module is imported.
+\section{\class{Responder} Objects \label{responder}}
 
-\chapter{API}
+Instances of \class{httpy.Responder} are middleware that speak plain WSGI on the
+server side, but they also accept strings and \class{Response} objects from the
+application side. When a \class{Responder} receives a \class{Response} object,
+that becomes the WSGI endpoint. When a \class{Responder} receives a string, it
+creates a \class{Response} object with the string as the \var{body}, and the
+\mailheader{Content-Type} set to \code{text/html}. This implicit
+\class{Response} then becomes the endpoint.
 
-\section{Functions}
 
-\begin{funcdesc}{get}{}
-Return the current \envvar{PYTHONMODE} setting as a lowercase string; will raise
-\exception  {EnvironmentError} if the (case-insensitive) setting is not one of
-\code{debugging}, \code{development}, \code{staging}, or \code{production}.
-\end{funcdesc}
+\section{\class{Response} Objects \label{response}}
 
-\begin{funcdesc}{set}{mode}
-Given a mode, set the PYTHONMODE environment variable and refresh the module's
-boolean members. If given a bad mode, \exception{ValueError} is raised.
-\end{funcdesc}
+Instances of \class{httpy.Response} are also plain WSGI applications, with the
+following data attributes. Note that values are only validated in the
+constructor, so it is currently possible to return/raise a malformed
+\class{Response} by setting instance attributes post-instantiation.
 
-\begin{funcdesc}{setAPI}{}
-Refresh the module's boolean members. Call this if you ever change
-\envvar{PYTHONPATH} directly in the \code{os.environ} mapping.
-\end{funcdesc}
-
-\section{Members}
-
-The module defines a number of boolean attributes reflecting the current mode
-setting, including abbreviations and combinations. Uppercase versions of each of
-the following are also defined (e.g., \code{DEBUGGING}).
-
-\begin{datadesc}{debugging, deb}
-\class{True} if \envvar{PYTHONMODE} is set to \code{debugging}.
-\end{datadesc}
-\begin{datadesc}{development, dev}
-\class{True} if \envvar{PYTHONMODE} is set to \code{development}.
-\end{datadesc}
-\begin{datadesc}{staging, st}
-\class{True} if \envvar{PYTHONMODE} is set to \code{staging}.
-\end{datadesc}
-\begin{datadesc}{production, prod}
-\class{True} if \envvar{PYTHONMODE} is set to \code{production}.
-\end{datadesc}
-\begin{datadesc}{debugging_or_development, debdev, devdeb}
-\class{True} if \envvar{PYTHONMODE} is set to \code{debugging} or \code{development}.
-\end{datadesc}
-\begin{datadesc}{staging_or_production, stprod}
-\class{True} if \envvar{PYTHONMODE} is set to \code{staging} or \code{production}.
+\begin{datadesc}{code}
+The \ulink{HTTP code}{http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html} as an integer.
 \end{datadesc}
 
+\begin{datadesc}{body}
+The message body as a string.
+\end{datadesc}
 
-\chapter{Example}
+\begin{datadesc}{headers}
+The message headers as an instance of the standard library's
+\ulink{\module{email.Message.Message}}{http://docs.python.org/lib/module-email.message.html}.
+\end{datadesc}
 
-Example usage:
+When called, \class{Response} instances call \code{start_response} with
+adaptations of \var{code} and \var{headers}, and return a one-item list
+containing \var{body}.
+
+
+\chapter{Example \label{example}}
+
+Here is an example:
 
 \begin{verbatim}
->>> import mode
->>> mode.set('development')     # can set the mode at runtime
->>> mode.get()                  # and access the current mode
-'development'
->>> mode.development            # module defines boolean constants
-True
->>> mode.PRODUCTION             # uppercase versions are also defined
-False
->>> mode.dev                    # as are abbreviations
-True
->>> mode.DEBDEV, mode.stprod    # and combinations
-(True, False)
+Python 2.5 (r25:52005, Sep 25 2006, 21:37:36)
+[GCC 3.4.4 [FreeBSD] 20050518] on freebsd6
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+>>> import httpy
+>>> app = lambda env, start: "Greetings, program!"
+>>> app = httpy.Responder(app)
+>>>
+>>> from wsgiref.simple_server import make_server
+>>> server = make_server('', 8080, app)
+>>> server.serve_forever() # now hit http://localhost:8080/
+>>>
+192.168.1.100 - - [09/Nov/2006 23:52:45] "GET / HTTP/1.1" 200 19
 \end{verbatim}
 
-\chapter{Copyright and License}
+\chapter{Copyright and License \label{legal}}
 
 Copyright (c) 2006, Chad Whitacre <chad@zetaweb.com>. All rights reserved.
 
@@ -164,8 +167,6 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
 
 
 \end{document}

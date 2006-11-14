@@ -1,3 +1,20 @@
+~~VERSION~~ -- November 13, 2006
+==========================
+
+This is a major release of httpy, marking a significant change in scope. Whereas
+previous versions attempted to compete with WSGI, this release aims only to
+smooth out WSGI's most glaring warts. These warts are necessary to support edge
+cases, and are intended by the PEP to be smoothed over.
+
+Specifically, httpy supplies middleware that allows other WSGI applications to
+return a string or return/raise an httpy.Response object instead of an iterable.
+Standard application-side WSGI apps continue to behave as normal.
+
+To reflect the significance of this release, I have named it 1.0a1. When the API
+is stable, I will release 1.0b1. When it is bug-free, I will cut a 1.0
+maintenance branch, and release 1.0.0 from there.
+
+
 0.9a2 -- April 12, 2006
 =======================
 

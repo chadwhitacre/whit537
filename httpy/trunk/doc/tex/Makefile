@@ -2,10 +2,11 @@
 # PYTHONSRC environment variable to the root of a Python source distribution.
 
 VERSION=~~VERSION~~
-MKHOWTO    = $PYTHON_SRC/Doc/tools/mkhowto \
+#PYTHONSRC=/home/whit537/python/2.4.3/src
+MKHOWTO    = $(PYTHONSRC)/Doc/tools/mkhowto \
 				--iconserver icons \
-				--split 5 \
-				--link 3 \
+				--split 1 \
+				--link 1 \
 				--favicon icons/zeta.ico \
 				--dir ./html \
 				--logging \
